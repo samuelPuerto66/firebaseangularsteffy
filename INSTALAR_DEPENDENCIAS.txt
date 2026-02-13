@@ -1,0 +1,103 @@
+================================================================================
+           INSTRUCCIONES PARA INSTALAR DEPENDENCIAS - CHAT ANGULAR
+================================================================================
+
+OPCIÓN 1: INSTALAR DESDE LA TERMINAL (RECOMENDADO)
+================================================================================
+
+1. Abre una terminal (PowerShell, Command Prompt o Git Bash)
+
+2. Navega a la carpeta del proyecto:
+   cd c:\Users\SENA\Downloads\902SN\chatAngular
+
+3. Ejecuta el comando para instalar todas las dependencias:
+   npm install
+
+   ¡Listo! Las dependencias se instalarán automáticamente.
+
+
+OPCIÓN 2: INSTALAR DESDE VS CODE
+================================================================================
+
+1. Abre VS Code y carga el proyecto de chatAngular
+
+2. Abre una terminal integrada en VS Code (Ctrl + `)
+
+3. La terminal ya debería estar en el directorio correcto. Si no, ejecuta:
+   cd c:\Users\SENA\Downloads\902SN\chatAngular
+
+4. Ejecuta:
+   npm install
+
+
+COMANDOS ÚTILES DESPUÉS DE INSTALAR DEPENDENCIAS
+================================================================================
+
+- Iniciar el servidor de desarrollo:
+  npm start
+
+- Compilar el proyecto:
+  npm build
+
+- Ejecutar pruebas:
+  npm test
+
+- Ver actualizaciones de dependencias disponibles:
+  npm outdated
+
+
+SOLUCIÓN DE PROBLEMAS
+================================================================================
+
+Si tienes errores al instalar:
+
+1. Elimina la carpeta "node_modules" y el archivo "package-lock.json":
+   rmdir /s node_modules (Windows)
+   del package-lock.json
+
+2. Limpia el caché de npm:
+   npm cache clean --force
+
+3. Intenta instalar nuevamente:
+   npm install
+
+
+DEPENDENCIAS DEL PROYECTO
+================================================================================
+
+Dependencias principales:
+- @angular/common: ^20.3.0
+- @angular/compiler: ^20.3.0
+- @angular/core: ^20.3.0
+- @angular/fire: ^20.0.1 (Firebase para Angular)
+- @angular/forms: ^20.3.0
+- @angular/platform-browser: ^20.3.0
+- @angular/router: ^20.3.0
+- firebase: ^11.10.0 (Base de datos Firebase)
+- rxjs: ~7.8.0 (Programación reactiva)
+- tslib: ^2.3.0
+- zone.js: ~0.15.0
+
+Dependencias de desarrollo:
+- @angular/build: ^20.3.16
+- @angular/cli: ^20.3.16
+- @angular/compiler-cli: ^20.3.0
+- typescript: ~5.9.2
+- karma: Herramienta de testing
+- jasmine: Framework de testing
+
+
+INFORMACIÓN IMPORTANTE
+================================================================================
+
+- Total de paquetes: 633
+- Vulnerabilidades: 1 (bajo nivel de severidad)
+- Para reparar vulnerabilidades, ejecuta: npm audit fix
+
+- El proyecto usa Node.js y npm
+- Versión de Node.js recomendada: 18 o superior
+- Versión de npm recomendada: 9 o superior
+
+================================================================================
+Última actualización: 13 de febrero de 2026
+================================================================================
