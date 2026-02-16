@@ -1,1 +1,50 @@
 <p>chat works!</p>
+
+<!--contendeor completo del chat-->
+<div class="chat-container">
+    <header class="chat-header">
+        <div class="user-info">
+
+            <img src="https://images.seeklogo.com/logo-png/47/1/microsoft-account-logo-png_seeklogo-470870.png" 
+            alt="imagen del usuario"
+            class="user-avatar"
+            (error) = "ManejoErrorImagen()">
+
+
+            <div class="user-details">
+                <h2 class="user-name">{{nombre}}</h2>
+                <p class="user-email">{{email}}</p>
+            </div>
+
+        </div>
+        
+    <div class="header-action">
+    <button class="logout-btn" (click)="cerrarsesion()"
+    > Salir</button>
+    </div>
+</header>    
+    <main class="chat-messages" >
+        <!-- Validacion en caso de que no hayan Mensajes, Vamos a dar una bienvenida-->
+         @if(mensajes.length == 0 && !cargandoHistorial){
+        <div class="welcome-message">
+            <div class="welcome-content">
+                <div class="welcome-icon">🤖</div>
+                    <h2> ¡ Hola Soy Tu Asistente Tecnologico ! </h2>
+                    <p>Puedo ayudarte con tus tareas, preguntame!5705</p>
+                    <p class="welcome-tip"><strong>Consejo</strong> Se esentifico en tus preguntas para obtener mejores resultados</p>
+            </div>
+        </div>
+         }
+         <!--En Caso de que si hayan mensajes-->
+         @if(cargandoHistorial){
+            <div class= "loading-history">
+                <div class= "loading-spinner"> ❤️ </div>
+                <p>Cargando tu historial de conversacion</p>
+
+            </div>
+         }
+         <!--Lista de Mensajes Dependiendo el tipo (Usuario o asistente)-->
+https://github.com/samuelPuerto66/firebaseangularsteffy.git</main>
+
+
+</div>
