@@ -20,7 +20,7 @@
             <button class="logout-btn" (click)="cerrarsesion()"> Salir</button>
         </div>
     </header>
-    <main class="chat-messages">
+    <main class="chat-messages" #messagesContainer>
 
         <!-- Validacion en caso de que no hayan Mensajes, Vamos a dar una bienvenida-->
         @if(mensajes.length == 0 && !cargandoHistorial){
@@ -59,7 +59,7 @@
                         <p>{{mensaje.contenido}}</p>
                     </div>
                     <div class="message-time"></div>
-                    <p>{{mensaje.fechaEnvio}}</p>
+                    <p>{{formatearHora(mensaje.fechaEnvio)}}</p>
                 </div>
 
 
@@ -77,7 +77,7 @@
                             <p [innerHTML]="formatearMensajeAsistente(mensaje.contenido)"></p>
                         </div>
                         <div class="message-time">
-                            {{mensaje.fechaEnvio}}
+                            {{formatearHora(mensaje.fechaEnvio)}}
                             @if(mensaje.estado === 'Error'){
                             <span class="error-indicator">🚫</span>
                             }
