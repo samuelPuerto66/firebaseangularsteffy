@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrl: './auth.css',
 })
 export class Auth {
-MensajeError="."
+MensajeError=""
 Autenticando=false
 
 //inject de dependencias
@@ -29,16 +29,17 @@ async IniciarSesionConGoogle (): Promise <void>{
     //falta implementar el servicio
 
 
+  const usuario = await this.authservice.iniciarSesion() 
 
 
 
-
-    //vamos a simular un usuario ya creado
+    /*//vamos a simular un usuario ya creado
     let usuarios=null
     usuarios = await new Promise ((resolve) =>{
       setTimeout(()=>resolve({nombre:'usuario de prueba'}),1000)
-  })
-  if (usuarios){
+  })*/
+
+  if (usuario){
     await this.router.navigate(['/chat'])
   } else{
     this.MensajeError = " Hubo un error al Autenticar "
@@ -57,11 +58,18 @@ async IniciarSesionConGoogle (): Promise <void>{
 
    }finally{
     this.Autenticando = false
-   
-
-
+  }
    }
-   
+  
+
+   ngOnInit():void{
+
+    this.authservice.estaAutenticado$.subscribe(autenticado =>{
+      if (autenticado){
+        this.router.navigate(['/chat'])
+      }
+    });
+
   }
   
 }
