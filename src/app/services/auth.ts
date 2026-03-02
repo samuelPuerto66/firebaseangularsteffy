@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, user, User } from '@angular/fire/auth';
+import { Auth, user, User, signOut } from '@angular/fire/auth';
 import { map } from 'rxjs';
 import { Usuario } from '../../models/usuario';
 import { GoogleAuthProvider } from 'firebase/auth';
@@ -63,6 +63,14 @@ export class AuthService {
   obtenerUsuario(): User | null {
     return this.auth.currentUser
   }
-  //cerrar sesion
+
+  async cerrarSesion(): Promise<void> {
+    try {
+      await signOut(this.auth);
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      throw error;
+    }
+  }
 }
 

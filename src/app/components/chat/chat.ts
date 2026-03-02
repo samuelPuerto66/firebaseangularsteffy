@@ -1,6 +1,11 @@
-import { Component, ViewChild, ElementRef, contentChild, viewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef, contentChild, viewChild, inject } from '@angular/core';
 import { MensajeChat } from '../../../models/chat';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth';
+import { ChatService } from '../../services/chat';
+import { Router } from '@angular/router';
+import { User } from 'firebase/auth';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -12,47 +17,67 @@ import { FormsModule } from '@angular/forms';
 
 
 export class Chat {
-  nombre: string = "Samuel Puerto M."
-  email: string = "samuelpuerto066@gmail.com"
+
+  private authService = inject(AuthService);
+  private chatService = inject(ChatService);
+  private route = inject(Router);
+
+
+  @ViewChild('messagesContainer') messagesContainer!: ElementRef
+  usuario : User  | null = null;
+  mensajes: MensajeChat[] = []
   asistenteEscribiendo = false
   mensajeTexto = ""
   enviandoMensaje = false
+  cargandoHistorial = false
+  mensajeError = ""
+  private debeHacerScroll = true;
+ private  suscripciones : Subscription[] = [];
 
 
-  enviarMensaje() {
+ private async verificarAutenticacion(): Promise<void> {
+  // a la variable usuario le voy a asignar el resultado de obtenerUsuario del authService
+   this.usuario = this.authService.obtenerUsuario()
+
+  if (!this.usuario) {
+    await this.route.navigate(['/auth'])
+    throw new Error('Usuario no autenticado')
   }
+ }
+   
+  private async inicializarChat(): Promise<void> {
+    if (!this.usuario) {
+      return;
+    }
 
+    this.cargandoHistorial = true;
+    try {
+      await this.chatService.InicializarChat(this.usuario.uid);
+    } catch (error) {
+      console.error('Error al inicializar chat:', error);
+    } finally {
+      this.cargandoHistorial = false;
+    }
+  }
 
   formatearMensajeAsistente(mensaje: string) {
     return mensaje
       .replace(/\n/g, '<br>')
-       .replace (/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace (/\*(.*?)\*/g, '<em>$1</em>')
-    }
-
-
-
-  mensajes: MensajeChat[] = []
-  cargandoHistorial = false
-  private debeHacerScroll = true;
-
-
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>');
+  }
 
   trackByMensaje(index: number, mensaje: MensajeChat) {
+    return mensaje.id || index;
   }
-
 
   ManejoErrorImagen() {
+    this.mensajeError = 'Error al cargar la imagen';
   }
-
 
   cerrarsesion() {
+    this.authService.cerrarSesion();
   }
-
-
-
-  // referenciar los contenedores
-  @ViewChild('messagesContainer') messagesContainer!: ElementRef
 
   private scrollHaciaAbajo(): void {
     try {
@@ -81,78 +106,13 @@ formatearHora(fecha: Date): string{
   })
 }
 
+  enviarMensaje() {
+  }
+
+
+
   ngOnInit() {
-    this.mensajes = this.generarMensajeDemo();
+    
   }
-  private generarMensajeDemo(): MensajeChat[] {
-    const ahora = new Date();
-
-    return [
-      {
-        id: 'id1',
-        contenido: 'Hola eres el Asistente?',
-        tipo: 'Usuario',
-        fechaEnvio: new Date(ahora.getTime()),
-        estado: 'Enviado',
-        usuarioId: 'u1',
-
-      }, {
-        id: 'id2',
-        contenido: 'Hola soy tu Asistente',
-        tipo: 'Asistente',
-        fechaEnvio: new Date(ahora.getTime()),
-        estado: 'Enviado',
-        usuarioId: 'u2',
-      }, {
-        id: 'id1',
-        contenido: 'Necesito esta cita para mañana ',
-        tipo: 'Usuario',
-        fechaEnvio: new Date(ahora.getTime()),
-        estado: 'Enviado',
-        usuarioId: 'u1',
-      }, {
-        id: 'id2',
-        contenido: 'Hola soy tu Asistente',
-        tipo: 'Asistente',
-        fechaEnvio: new Date(ahora.getTime()),
-        estado: 'Enviado',
-        usuarioId: 'u2',
-      }, {
-        id: 'id2',
-        contenido: 'La necesito alas 3:40',
-        tipo: 'Asistente',
-        fechaEnvio: new Date(ahora.getTime()),
-        estado: 'Enviado',
-        usuarioId: 'u2',
-      }, {
-        id: 'id1',
-        contenido: 'Hola soy tu Asistente',
-        tipo: 'Usuario',
-        fechaEnvio: new Date(ahora.getTime()),
-        estado: 'Error',
-        usuarioId: 'u2',
-      }, {
-        id: 'id2',
-        contenido: 'Necesito esta cita para mañana ',
-        tipo: 'Asistente',
-        fechaEnvio: new Date(ahora.getTime()),
-        estado: 'Enviado',
-        usuarioId: 'u1',
-      }, {
-        id: 'id1',
-        contenido: 'Necesito esta cita para mañana ',
-        tipo: 'Usuario',
-        fechaEnvio: new Date(ahora.getTime()),
-        estado: 'Enviado',
-        usuarioId: 'u1',
-      }, {
-        id: 'id2',
-        contenido: 'Necesito esta cita para mañana ',
-        tipo: 'Asistente',
-        fechaEnvio: new Date(ahora.getTime()),
-        estado: 'Enviado',
-        usuarioId: 'u1',
-      },
-    ]
-  }
+  
 }
