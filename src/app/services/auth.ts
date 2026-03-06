@@ -63,7 +63,8 @@ export class AuthService {
   obtenerUsuario(): User | null {
     return this.auth.currentUser
   }
-
+ 
+  
   async cerrarSesion(): Promise<void> {
     try {
       await signOut(this.auth);

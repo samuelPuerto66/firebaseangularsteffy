@@ -25,7 +25,7 @@ export class FirebaseService {
         throw new Error('El tipo es requerido');
       }
 
-      const coleccionMensajes = collection(this.firestore, 'Mensajes');
+      const coleccionMensajes = collection(this.firestore, 'mensajes');
       //prepara el mensaje respecto a las fechas
       const mensajeGuardar = {
         usuarioId: mensaje.usuarioId,
