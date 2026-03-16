@@ -9,8 +9,8 @@ export const environment ={
   appId: "1:868458214120:web:510dc2c04e186eb4978f5d",
   measurementId: "G-MP6GFG6BG5"
 },
-        gemini:{
-        apiURL:"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+         gemini:{
+        apiURL:"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
         apiKey:"AIzaSyAOa2AFOmuPaMjDwtQwOHltSMbz4ye-0pk"
     }
 }
