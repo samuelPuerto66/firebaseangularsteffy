@@ -1,4 +1,5 @@
-import { Component, ViewChild, ElementRef, contentChild, inject, viewChild, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
+import { Component, ViewChild, ElementRef, inject, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MensajeChat } from '../../../models/chat';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
@@ -10,7 +11,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './chat.html',
   styleUrl: './chat.css',
 })
@@ -23,7 +24,7 @@ export class Chat implements OnInit, OnDestroy, AfterViewChecked {
 
   //Referenciar contenedores
   @ViewChild('messagesContainer') messagesContainer! : ElementRef
-  @ViewChild('mmensajeInput') mensajeInput! : ElementRef
+  @ViewChild('mensajeInput') mensajeInput! : ElementRef
 
   usuario: User|null = null;
   mensajes: MensajeChat[] =[]
@@ -123,12 +124,11 @@ try{
     try{
       this.chatService.limpiarChat();
 
-      await this.authService.cerrarSesion
+      await this.authService.cerrarSesion();
       await this.router.navigate(['/auth']);
     }catch (error){
-      console.error('Error al cerrarla esion desde el componente')
+      console.error('Error al cerrar la sesion desde el componente')
       this.mensajeerror = "Error al cerrar la sesion"
-      throw error;
     }
   }
 
@@ -166,9 +166,10 @@ try{
   }
   
 
-  trackByMensaje( index:number, mensaje: MensajeChat){
-    return mensaje.id || `${mensaje.tipo} - ${mensaje.fechaEnvio}.getTime()}`
-}
+  trackByMensaje(index:number, mensaje: MensajeChat){
+    if (mensaje.id) return mensaje.id;
+    return `${mensaje.tipo} - ${mensaje.fechaEnvio.getTime()}`;
+  }
 
   formatearMensajeAsistente(contenido:string){
     
@@ -191,19 +192,19 @@ try{
 
   try {
     await this.verificarAutenticacion();
+    if (!this.usuario) {
+      return;
+    }
     await this.inicializarChat();
     this.configurarSuscripciones();
 
   } catch (error) {
     console.error('Error al inicializar el chat OnInit')
     this.mensajeerror= "Error al cargar el chat. Intente recargar la pagina"
-    throw error;
   }
- 
+ }
 
-}
-
-ngOnDestroy():void{
+ ngOnDestroy():void{
   this.suscripciones.forEach(sub => sub.unsubscribe());
 }
 
