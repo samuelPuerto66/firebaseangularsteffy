@@ -53,7 +53,7 @@ export class FirebaseService {
       return new Observable(observer => {
 
         const consulta = query(
-          collection(this.firestore, 'Mensajes'),
+          collection(this.firestore, 'mensajes'),
           where('usuarioId', '==', usuarioId),
         )
 

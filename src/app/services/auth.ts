@@ -23,8 +23,10 @@ export class AuthService {
 
 
 
-  // funcion asincrona que permite el inicio de sesion 
+  // funcion asincrona que permite el inicio de sesion
   async iniciarSesion(): Promise<Usuario | null> {
+    console.log("inicio sesion auth");
+
     try {
 
       const proveedor = new GoogleAuthProvider;
@@ -61,10 +63,12 @@ export class AuthService {
   }
 
   obtenerUsuario(): User | null {
+    console.log("obtener usuario - auth.ts");
+
     return this.auth.currentUser
   }
- 
-  
+
+
   async cerrarSesion(): Promise<void> {
     try {
       await signOut(this.auth);
@@ -74,4 +78,3 @@ export class AuthService {
     }
   }
 }
-

@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, inject, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MensajeChat } from '../../../models/chat';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth';
 import { ChatService } from '../../services/chat';
 import { Router } from '@angular/router';
@@ -11,9 +11,10 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './chat.html',
-  styleUrl: './chat.css',
+  styleUrls: ['./chat.css'],
 })
 export class Chat implements OnInit, OnDestroy, AfterViewChecked {
 
@@ -39,8 +40,12 @@ export class Chat implements OnInit, OnDestroy, AfterViewChecked {
   private suscripciones : Subscription[] = []
 
   private async verificarAutenticacion(): Promise<void>{
+    console.log("verificar autentiacion componente");
+
   // a la variable usuario le voy a asignar el servicio de auth y la funcion obtenerUsuario
   this.usuario = this.authService.obtenerUsuario()
+  console.log(this.usuario, "usuario");
+
   if (!this.usuario) {
     await this.router.navigate(['/auth'])
     throw Error('No hay un usuario autenticado')
@@ -48,16 +53,16 @@ export class Chat implements OnInit, OnDestroy, AfterViewChecked {
 }
 private async inicializarChat(): Promise<void>{
   if(!this.usuario){
-    return; 
+    return;
   }
 this.cargandoHistorial = true;
 try{
-  await this.chatService.InicializarChat(this.usuario.uid)
+  await this.chatService.inicializarChat(this.usuario.uid)
 } catch (error){
   console.error('Error al inicializar')
   throw error;
 
-  
+
 }finally{
   this.cargandoHistorial = false
 }
@@ -65,11 +70,11 @@ try{
 
   private configurarSuscripciones(): void{
     const subMensajes = this.chatService.mensajes$.subscribe( mensajes=>{
-      this.mensajes = mensajes; 
+      this.mensajes = mensajes;
       this.debeHacerScroll = true;
     });
 
-    
+
     const subMensajesAsis = this.chatService.asistenteRespondiendo$.subscribe( respondiendo => {
       this.asistenteEscribiendo = respondiendo;
       if(respondiendo){
@@ -90,7 +95,7 @@ try{
   this.mensajeerror=""
   this.enviandoMensaje= true;
 
-//guardar el mensaje en la variable texto 
+//guardar el mensaje en la variable texto
   const texto = this.mensajeTexto.trim();
   //limpiar el input
   this.mensajeTexto= "";
@@ -116,9 +121,9 @@ try{
     }
   }
 
-  
-    
-   
+
+
+
 
   async cerrarSesion(): Promise<void>{
     try{
@@ -127,14 +132,15 @@ try{
       await this.authService.cerrarSesion();
       await this.router.navigate(['/auth']);
     }catch (error){
-      console.error('Error al cerrar la sesion desde el componente')
+      console.error('Error al cerrarla esion desde el componente')
       this.mensajeerror = "Error al cerrar la sesion"
+      throw error;
     }
   }
 
-  
 
-  
+
+
 
 
   private scrollHaciaAbajo():void{
@@ -142,7 +148,7 @@ try{
         const container = this.messagesContainer?.nativeElement
         if(container){
           container.scrollTop = container.scrollHeight
-          
+
         }
     }catch(error){
       console.error('✖️Error al hacer scroll', error)
@@ -164,15 +170,14 @@ try{
     evento.target.src =""
 
   }
-  
+
 
   trackByMensaje(index:number, mensaje: MensajeChat){
-    if (mensaje.id) return mensaje.id;
-    return `${mensaje.tipo} - ${mensaje.fechaEnvio.getTime()}`;
+    return mensaje.id || `${mensaje.tipo}-${mensaje.fechaEnvio.getTime()}`;
   }
 
   formatearMensajeAsistente(contenido:string){
-    
+
     return contenido
     .replace(/\n/g, '<br>')
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -180,31 +185,32 @@ try{
   }
 
 
-  formatearHora(fecha: Date): string{
-    return fecha.toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
+  formatearHora(fecha: any) {
+  if (!fecha) return '';
 
-  }
+  // Si viene de Firestore como Timestamp, lo convertimos a Date
+  const d = fecha.toDate ? fecha.toDate() : new Date(fecha);
+
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
 
  async ngOnInit(): Promise <void>{
 
   try {
     await this.verificarAutenticacion();
-    if (!this.usuario) {
-      return;
-    }
     await this.inicializarChat();
     this.configurarSuscripciones();
 
   } catch (error) {
     console.error('Error al inicializar el chat OnInit')
     this.mensajeerror= "Error al cargar el chat. Intente recargar la pagina"
+    throw error;
   }
- }
 
- ngOnDestroy():void{
+
+}
+
+ngOnDestroy():void{
   this.suscripciones.forEach(sub => sub.unsubscribe());
 }
 
