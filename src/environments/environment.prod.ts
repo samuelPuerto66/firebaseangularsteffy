@@ -12,7 +12,7 @@ export const environment ={
 
         gemini:{
         apiURL:"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
-        apiKey:"AIzaSyAMk1D7lO36bIVwchoglp0kivQ0pLO_DMU"
+        apiKey:"AIzaSyBDAK2qProSzY4UAXzvoE7oAeSW91gKCE8"
     }
 }
 
